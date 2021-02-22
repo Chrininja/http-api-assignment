@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node ./src/server.js",
     "pretest": "eslint ./src --fix",
-    "test": "\"echo \\\"Tests complete\\\"\""
+    "test": "echo \"Tests complete\""
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/Chrininja/http-api-assignment#readme",
   "devDependencies": {
-    "eslint": "^7.20.0",
+    "eslint": "^7.19.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.22.1"
   }
