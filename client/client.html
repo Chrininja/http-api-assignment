@@ -1,14 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>Our simple HTTP server</title>
   <link rel="stylesheet" type="text/css" href="/style.css">
-  
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
   <script type="text/babel">
 
+    const handleResponse = (xhr) => {
+
+      const type = xhr.getResponseHeader('content-type'); // xml or json
+      const content = document.querySelector('#content');
+
+      // Cases for each status
+      switch(xhr.status) {
+        case 200: // success
+          content.innerHTML = '<b>Success!</b>';
+          break;
+        case 201: // create
+          content.innerHTML = '<b>Create</b>';
+          break;
+        case 400: // bad request
+          content.innerHTML = '<b>Bad Request</b>';
+          break;
+        case 401: // unauthorized
+          content.innerHTML = '<b>Unauthorized</b>';
+          break;
+        case 403: // Forbidden
+          content.innerHTML = '<b>Forbidden</b>';
+          break;
+        case 404: // Not Found
+          content.innerHTML = '<b>Not Found</b>';
+          break;
+        case 500: // Server Error
+          content.innerHTML = '<b>Internal Server Error</b>';
+          break;
+        case 501: // Not Implemented
+          content.innerHTML = '<b>Not Implemented</b>';
+          break;
+        default: // Anything else
+          content.innerHTML = '<b>Unknown response type</b>';
+          break;
+      }
+
+      // Output it as a JSON string if selected
+      if(type === 'application/json') {
+        let obj = JSON.parse(xhr.response);
+        console.log(xhr.response);
+        const message = document.createElement('p');
+          message.innerHTML = "Message: " + JSON.stringify(obj.message);
+          content.appendChild(message);
+
+      } else if(type === 'text/xml') {
+        content.innerHTML += `<p>Message: ${xhr.response}</p>`;
+      }
+    };
+
+    // Ajax
+    const sendAjax = (url, acceptedType) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', url);
+      xhr.setRequestHeader('Accept', acceptedType);
+      xhr.onload = () => handleResponse(xhr);
+      xhr.send();
+    };
+
+    // Setup
+    const init = () => {
+      const sendButton = document.querySelector("#send");
+      const requestUpdate = () => {
+        let url = document.querySelector("#page").value;
+        let acceptedType = document.querySelector("#type").value;
+        sendAjax(url, acceptedType);
+      };
+
+      sendButton.addEventListener('click', requestUpdate);
+    };
+    window.onload = init;
+
   </script>
 </head>
+
 <body>
   <section id="top">
     <h3>Status Code Tests</h3>
@@ -30,4 +103,5 @@
   <section id="content">
   </section>
 </body>
+
 </html>
